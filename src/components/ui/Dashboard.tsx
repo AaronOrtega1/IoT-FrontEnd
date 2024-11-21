@@ -3,8 +3,10 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
+import AdminDashboard from "./AdminDashboard";
 
 interface DeviceData {
+  deviceName: string;
   peso: number;
   horaMovimiento: string;
   pesoLastActivity: string;
@@ -17,6 +19,7 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Variables de configuración
   const UBIDOTS_TOKEN = "BBUS-Er2ldEiDcxgvBocY7CGN2O1mlKSYRF";
   const DEVICE_ID = "672188133634ea12e1adc641"; // ID obtenido de la respuesta de la API
   const API_URL = "https://industrial.api.ubidots.com/api/v1.6";
@@ -54,7 +57,11 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
 
         // 4. Actualizar el estado con los datos obtenidos
         setDeviceData({
-          peso: variablesData.results[1].last_value.value,
+          deviceName: variablesData.results[0].datasource.name,
+          peso:
+            variablesData.results[1].last_value.value < 0
+              ? 0
+              : variablesData.results[1].last_value.value,
           horaMovimiento: variablesData.results[0].last_value.value,
           pesoLastActivity: dateUpdatePeso.toLocaleString(),
           horaMovimientoLastActivity: dateUpdateMov.toLocaleString(),
@@ -76,7 +83,7 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
 
     // Actualizar datos cada 30 segundos
     const interval = setInterval(() => {
-      if (isAdmin) {
+      if (!isAdmin) {
         fetchDeviceData();
       }
     }, 30000);
@@ -90,7 +97,7 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
         <h1 className="text-4xl md:text-6xl lg:text-9xl font-semibold text-blue-500">
           {isAdmin ? "Bienvenido Administrador" : "Dashboard"}
         </h1>
-        {isAdmin ? (
+        {!isAdmin ? (
           <div className="mt-10">
             <h2 className="text-3xl font-medium text-blue-500">
               Datos del Dispositivo:
@@ -102,6 +109,14 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
                 <p className="text-red-500">Error: {error}</p>
               ) : deviceData ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-xl font-medium text-gray-800">
+                      Nombre del Dispositivo
+                    </h3>
+                    <p className="text-lg text-gray-600">
+                      {deviceData.deviceName}
+                    </p>
+                  </div>
                   <div className="bg-white p-4 rounded-lg shadow">
                     <h3 className="text-xl font-medium text-gray-800">Peso</h3>
                     <p className="text-3xl font-bold text-blue-600">
@@ -143,9 +158,7 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
             </div>
           </div>
         ) : (
-          <p className="mt-10 text-xl text-red-500">
-            No tienes permisos para ver esta sección.
-          </p>
+          <AdminDashboard />
         )}
       </div>
     </div>

@@ -1,0 +1,25 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "672188133634ea12e1adc641",
+      "organization_data": null,
+      "organization": null,
+      "is_active": true,
+      "owner": "https://industrial.api.ubidots.com/api/v1.6/users/1366696",
+      "label": "mqtt-publish-esp32",
+      "name": "mqtt-publish-esp32",
+      "url": "https://industrial.api.ubidots.com/api/v1.6/datasources/672188133634ea12e1adc641",
+      "context": {},
+      "tags": [],
+      "created_at": "2024-10-30T01:12:51.207168Z",
+      "number_of_variables": 2,
+      "last_activity": 1732066553527,
+      "description": "",
+      "position": null,
+      "variables_url": "https://industrial.api.ubidots.com/api/v1.6/datasources/672188133634ea12e1adc641/variables"
+    }
+  ]
+}
