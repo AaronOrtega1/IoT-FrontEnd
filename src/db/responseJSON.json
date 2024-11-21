@@ -1,0 +1,67 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "673d397a437a0d105bb29cf7",
+      "name": "hora_movimiento",
+      "icon": null,
+      "unit": null,
+      "label": "hora_movimiento",
+      "datasource": {
+        "id": "672188133634ea12e1adc641",
+        "name": "mqtt-publish-esp32",
+        "url": "https://industrial.api.ubidots.com/api/v1.6/datasources/672188133634ea12e1adc641",
+        "label": "mqtt-publish-esp32"
+      },
+      "url": "https://industrial.api.ubidots.com/api/v1.6/variables/673d397a437a0d105bb29cf7",
+      "description": "",
+      "properties": {
+        "_previous_variable_label": "hora_movimiento"
+      },
+      "tags": [],
+      "created_at": "2024-11-20T01:20:58.292614Z",
+      "last_value": {
+        "value": 19.34,
+        "timestamp": 1732066553524,
+        "context": {},
+        "created_at": 1732066553524
+      },
+      "last_activity": 1732066553527,
+      "type": 0,
+      "derived_expr": "",
+      "values_url": "https://industrial.api.ubidots.com/api/v1.6/variables/673d397a437a0d105bb29cf7/values"
+    },
+    {
+      "id": "673d39647907c40b32900f73",
+      "name": "peso",
+      "icon": null,
+      "unit": null,
+      "label": "peso",
+      "datasource": {
+        "id": "672188133634ea12e1adc641",
+        "name": "mqtt-publish-esp32",
+        "url": "https://industrial.api.ubidots.com/api/v1.6/datasources/672188133634ea12e1adc641",
+        "label": "mqtt-publish-esp32"
+      },
+      "url": "https://industrial.api.ubidots.com/api/v1.6/variables/673d39647907c40b32900f73",
+      "description": "",
+      "properties": {
+        "_previous_variable_label": "peso"
+      },
+      "tags": [],
+      "created_at": "2024-11-20T01:20:36.407988Z",
+      "last_value": {
+        "value": -0.03,
+        "timestamp": 1732066531848,
+        "context": {},
+        "created_at": 1732066531848
+      },
+      "last_activity": 1732066531851,
+      "type": 0,
+      "derived_expr": "",
+      "values_url": "https://industrial.api.ubidots.com/api/v1.6/variables/673d39647907c40b32900f73/values"
+    }
+  ]
+}

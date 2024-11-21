@@ -11,6 +11,8 @@ interface PetData {
 
 const CreatePet = () => {
   const [petData, setPetData] = useState<PetData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/pet")
