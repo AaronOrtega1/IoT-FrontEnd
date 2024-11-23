@@ -12,25 +12,24 @@ interface DevicesData {
 }
 
 const AdminDashboard = () => {
-  const [ubidotsToken, setUbidotsToken] = useState<string>("");
   const [devicesData, setDevicesData] = useState<DevicesData>({ devices: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [tokenSubmitted, setTokenSubmitted] = useState(false);
 
   const API_URL = "https://industrial.api.ubidots.com/api/v1.6";
 
-  const handleTokenSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (!ubidotsToken.trim()) {
-      setError("Por favor, ingrese un token válido");
-      return;
+  const getTokenFromLocalStorage = (): string | null => {
+    const storedData = localStorage.getItem("registeredUsers");
+    if (storedData) {
+      try {
+        const users = JSON.parse(storedData);
+        return users[0].tokenID;
+      } catch (e) {
+        console.error("Error al obtener los datos del localStorage", e);
+        return null;
+      }
     }
-
-    setTokenSubmitted(true);
-    fetchDevicesData(ubidotsToken);
+    return null;
   };
 
   const fetchDevicesData = async (token: string) => {
@@ -66,49 +65,47 @@ const AdminDashboard = () => {
       setDevicesData({ devices: formattedDevices });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
-      setTokenSubmitted(false);
     } finally {
       setLoading(false);
     }
   };
 
-  // Token input form
-  const TokenInputForm = () => (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Ingrese su Token de Ubidots
-      </h2>
-      <form onSubmit={handleTokenSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="ubidotsToken"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Token de Ubidots
-          </label>
-          <input
-            type="text"
-            id="ubidotsToken"
-            value={ubidotsToken}
-            onChange={(e) => setUbidotsToken(e.target.value)}
-            placeholder="Ingrese su token de Ubidots"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          Consultar Dispositivos
-        </button>
-      </form>
-    </div>
-  );
+  useEffect(() => {
+    const token = getTokenFromLocalStorage();
 
-  // Devices list rendering
-  const DevicesList = () => (
+    if (!token) {
+      setError("No se encontró el token de acceso.");
+      setLoading(false);
+      return;
+    }
+
+    fetchDevicesData(token);
+
+    // Actualizar datos cada 30 segundos
+    const interval = setInterval(() => {
+      fetchDevicesData(token);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-300">
+        <div className="text-center p-8 bg-red-50 rounded-lg shadow-lg max-w-md w-full mx-4">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">
+            Error de Acceso
+          </h2>
+          <p className="text-gray-700">
+            No se encontró el token de acceso. Por favor, inicie sesión
+            nuevamente.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Dispositivos Ubidots</h1>
 
@@ -134,12 +131,6 @@ const AdminDashboard = () => {
           )}
         </div>
       )}
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-300">
-      {!tokenSubmitted ? <TokenInputForm /> : <DevicesList />}
     </div>
   );
 };

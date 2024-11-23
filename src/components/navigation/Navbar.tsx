@@ -2,12 +2,14 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
   const isDashboardPage = pathname === "/dashboard";
+  const isRegisterPage = pathname === "/register";
 
   return (
     <nav className="shadow-md">
@@ -21,15 +23,22 @@ const Navbar = () => {
           </div>
 
           {/* Links de navegación para desktop */}
-          {!isLoginPage && !isDashboardPage && (
+          {!isLoginPage && !isDashboardPage && !isRegisterPage && (
             <div className="hidden md:flex items-center space-x-4">
-              <a
+              <Link
+                href="/register"
+                // className="px-4 py-2 text-black hover:text-gray-900 rounded-md hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Registrarse
+              </Link>
+              <Link
                 href="/login"
                 // className="px-4 py-2 text-black hover:text-gray-900 rounded-md hover:bg-gray-100 transition-colors"
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 Iniciar Sesión
-              </a>
+              </Link>
             </div>
           )}
 
@@ -54,12 +63,12 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <a
+              <Link
                 href="/login"
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Iniciar Sesión
-              </a>
+              </Link>
             </div>
           </div>
         )}

@@ -1,8 +1,28 @@
 {
-  "count": 1,
+  "count": 2,
   "next": null,
   "previous": null,
   "results": [
+    {
+      "id": "6742008e42fc9634b080c98b",
+      "organization_data": null,
+      "organization": null,
+      "is_active": true,
+      "owner": "https://industrial.api.ubidots.com/api/v1.6/users/1366696",
+      "label": "test2",
+      "name": "test2",
+      "url": "https://industrial.api.ubidots.com/api/v1.6/datasources/6742008e42fc9634b080c98b",
+      "context": {
+        "_location_type": "auto"
+      },
+      "tags": [],
+      "created_at": "2024-11-23T16:19:26.351014Z",
+      "number_of_variables": 2,
+      "last_activity": null,
+      "description": "",
+      "position": null,
+      "variables_url": "https://industrial.api.ubidots.com/api/v1.6/datasources/6742008e42fc9634b080c98b/variables"
+    },
     {
       "id": "672188133634ea12e1adc641",
       "organization_data": null,
