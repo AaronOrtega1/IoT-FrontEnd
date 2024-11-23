@@ -2,6 +2,7 @@
 
 "use client";
 import React, { useEffect, useState } from "react";
+import CreateDeviceForm from "@/components/forms/CreateDeviceForm";
 
 interface Device {
   name: string;
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
   const [devicesData, setDevicesData] = useState<DevicesData>({ devices: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false); // Estado para mostrar/ocultar el formulario
   const API_URL = "https://industrial.api.ubidots.com/api/v1.6";
 
   const getTokenFromLocalStorage = (): string | null => {
@@ -124,6 +126,25 @@ const AdminDashboard = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Dispositivos Ubidots</h1>
+
+      {/* Botón para mostrar/ocultar el formulario */}
+      <div className="mb-6">
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+        >
+          {showForm ? "Cerrar Formulario" : "Crear Nuevo Dispositivo"}
+        </button>
+      </div>
+
+      {/* Mostrar el formulario si está activo */}
+      {showForm && (
+        <div className="mb-6">
+          <CreateDeviceForm />
+        </div>
+      )}
+
+      {/* Mostrar los dispositivos */}
       {loading && <p>Cargando dispositivos...</p>}
       {!loading && (
         <div>
