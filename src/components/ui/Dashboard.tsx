@@ -76,8 +76,15 @@ const Dashboard = () => {
 
         const devicesData = await devicesResponse.json();
 
-        // 2. Para cada dispositivo, obtener sus variables
-        const devicesPromises = devicesData.results.map(async (device: any) => {
+        // 2. Ordenar los dispositivos por fecha de creación (el más antiguo primero)
+        const sortedDevices = devicesData.results.sort((a: any, b: any) => {
+          const dateA = new Date(a.created_at).getTime();
+          const dateB = new Date(b.created_at).getTime();
+          return dateA - dateB;
+        });
+
+        // 3. Para cada dispositivo ordenado, obtener sus variables
+        const devicesPromises = sortedDevices.map(async (device: any) => {
           const variablesResponse = await fetch(
             `${API_URL}/datasources/${device.id}/variables`,
             {
@@ -114,6 +121,7 @@ const Dashboard = () => {
             pesoLastActivity: dateUpdatePeso.toLocaleString(),
             horaMovimientoLastActivity: dateUpdateMov.toLocaleString(),
             lastActivity: new Date().toLocaleString(),
+            createdAt: device.created_at, // Agregamos esta propiedad para referencia
           };
         });
 
@@ -127,16 +135,13 @@ const Dashboard = () => {
       }
     };
 
-    // Fetch inicial
+    // Fetch inicial y configuración del intervalo (resto del código igual)
     if (!isAdmin) {
       fetchAllDevicesData();
-
-      // Actualizar datos cada 30 segundos
       const interval = setInterval(fetchAllDevicesData, 30000);
       return () => clearInterval(interval);
     }
   }, [isAdmin, UBIDOTS_TOKEN]);
-
   return (
     <div className="min-h-screen">
       <div className="text-center justify-items-center content-center mx-auto py-6 sm:px-6 lg:px-8">

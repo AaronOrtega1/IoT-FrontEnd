@@ -3,19 +3,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+interface Device {
+  name: string;
+  last_activity: string;
+  created_at: string;
+  created_at_timestamp: number; // Agregamos este campo para facilitar la ordenación
+}
+
 interface DevicesData {
-  devices: {
-    name: string;
-    last_activity: string;
-    created_at: string;
-  }[];
+  devices: Device[];
 }
 
 const AdminDashboard = () => {
   const [devicesData, setDevicesData] = useState<DevicesData>({ devices: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const API_URL = "https://industrial.api.ubidots.com/api/v1.6";
 
   const getTokenFromLocalStorage = (): string | null => {
@@ -54,15 +56,31 @@ const AdminDashboard = () => {
       // 2. Transformar la respuesta a JSON
       const devicesData = await devicesResponse.json();
 
-      // 3. Mapear los resultados al formato deseado
-      const formattedDevices = devicesData.results.map((device: any) => ({
-        name: device.name,
-        last_activity: new Date(device.last_activity).toLocaleString(),
-        created_at: new Date(device.created_at).toLocaleString(),
-      }));
+      // 3. Mapear los resultados al formato deseado y agregar timestamp
+      const formattedDevices = devicesData.results.map((device: any) => {
+        const createdDate = new Date(device.created_at);
+        const lastActivityDate = device.last_activity
+          ? new Date(device.last_activity)
+          : new Date(0); // Si last_activity es null, usamos una fecha antigua
 
-      // 4. Actualizar el estado con los datos formateados
-      setDevicesData({ devices: formattedDevices });
+        return {
+          name: device.name,
+          last_activity:
+            lastActivityDate.getTime() === 0
+              ? "Sin actividad"
+              : lastActivityDate.toLocaleString(),
+          created_at: createdDate.toLocaleString(),
+          created_at_timestamp: createdDate.getTime(),
+        };
+      });
+
+      // 4. Ordenar los dispositivos por fecha de creación (más antiguo primero)
+      const sortedDevices = formattedDevices.sort(
+        (a, b) => a.created_at_timestamp - b.created_at_timestamp,
+      );
+
+      // 5. Actualizar el estado con los datos formateados y ordenados
+      setDevicesData({ devices: sortedDevices });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
@@ -72,13 +90,11 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const token = getTokenFromLocalStorage();
-
     if (!token) {
       setError("No se encontró el token de acceso.");
       setLoading(false);
       return;
     }
-
     fetchDevicesData(token);
 
     // Actualizar datos cada 30 segundos
@@ -108,9 +124,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Dispositivos Ubidots</h1>
-
       {loading && <p>Cargando dispositivos...</p>}
-
       {!loading && (
         <div>
           {devicesData.devices.length === 0 ? (
