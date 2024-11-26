@@ -28,7 +28,7 @@ interface DeviceData {
 interface RegisteredUser {
   email: string;
   password: string;
-  tokenID: string;
+  token_ubidots: string;
   isAdmin: boolean;
   rememberMe: boolean;
 }
@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   const userData = getUserFromLocalStorage();
   const isAdmin = userData?.isAdmin ?? false;
-  const UBIDOTS_TOKEN = userData?.tokenID ?? "";
+  const UBIDOTS_TOKEN = userData?.token_ubidots ?? "";
   const API_URL = "https://industrial.api.ubidots.com/api/v1.6";
 
   useEffect(() => {

@@ -85,7 +85,7 @@ const RegisterForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate form
@@ -95,6 +95,28 @@ const RegisterForm = () => {
 
     // Simulate registration process
     try {
+      const { email, password, tokenID, isAdmin } = formData;
+      const token_ubidots = tokenID;
+      const is_admin = isAdmin;
+
+      // Fetch a la API para registrar el usuario
+      const response = await fetch("http://127.0.0.1:8000/api/user/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // aceptar cualquier origen
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          token_ubidots,
+          is_admin,
+        }),
+      });
+
+      console.log(response);
+
       // Simulated user storage (would be replaced by actual API call)
       const mockUserStorage = JSON.parse(
         localStorage.getItem("registeredUsers") || "[]",

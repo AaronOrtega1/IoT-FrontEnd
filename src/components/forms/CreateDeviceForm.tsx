@@ -21,7 +21,7 @@ const CreateDeviceForm = () => {
     if (storedData) {
       try {
         const users = JSON.parse(storedData);
-        return users[0].tokenID;
+        return users[0].token_ubidots;
       } catch (e) {
         console.error("Error al obtener los datos del localStorage", e);
         return null;
