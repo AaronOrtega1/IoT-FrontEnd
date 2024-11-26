@@ -33,21 +33,35 @@ interface RegisteredUser {
   rememberMe: boolean;
 }
 
+interface Token {
+  token: string;
+}
+
 const Dashboard = () => {
   const [devicesData, setDevicesData] = useState<DeviceData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const getUserFromLocalStorage = (): RegisteredUser | null => {
-    const storedData = localStorage.getItem("registeredUsers");
-    if (storedData) {
-      try {
-        const users = JSON.parse(storedData);
-        return users[0];
-      } catch (e) {
-        console.error("Error al obtener los datos del localStorage", e);
-        return null;
+ 
+  const getUserFromLocalStorage = async (): Promise<Token | null> => {
+    const userToken = await fetch("http://127.0.0.1:8000/api/user/token/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          {
+            email: 'jose.mendoza@iteso.mx',//localStorage.getItem("email") ?? "",
+            password: '12345'//localStorage.getItem("password") ?? ""
+          }
+        ),
       }
+    );
+    if (userToken.status === 200) {
+      const body = await userToken.json();
+      const token = body.token;
+      localStorage.setItem("token", token); 
+      return { token: token };
     }
     return null;
   };
